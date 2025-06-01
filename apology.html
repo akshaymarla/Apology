@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Sorry ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            /* Removed initial cursor: crosshair from body to let photo-container handle it */
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 80vh; /* Keep this to ensure photo has height */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Your Photo Container Styling */
+        .photo-container {
+            width: 100%;
+            height: 100%; /* Take full height of container */
+            position: relative;
+            /* === IMPORTANT: REPLACE THIS LINE WITH YOUR PHOTO'S URL/PATH === */
+            /* Example: background: url('IMG_4483_2.jpg') center/cover no-repeat; */
+            /* For testing, you can use a placeholder image URL: */
+            background: url('1.jpg') center/cover no-repeat;
+            /* =============================================================== */
+            
+            /* === IMPORTANT: REPLACE THIS LINE WITH YOUR KNIFE CURSOR IMAGE === */
+            /* Make sure 'knife-head_0-e1436fc.png' is in the same folder */
+            /* Adjust hotspot (8 8) based on your image size */
+            cursor: url('2.jpg') 8 8, auto;
+            /* =============================================================== */
+        }
+
+        /* Shake animation for the container */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake-animation {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .click-effect {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0) 70%);
+            pointer-events: none;
+            animation: clickExplosion 0.6s ease-out forwards;
+        }
+
+        @keyframes clickExplosion {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        .apology-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 20; /* Ensure apology message is above other elements */
+        }
+
+        .apology-message.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .apology-text {
+            font-size: 2.5em;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .apology-subtitle {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .heart {
+            font-size: 3em;
+            color: #e74c3c;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+        }
+
+        .instruction {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            color: #2c3e50;
+            animation: fadeInOut 4s infinite;
+            z-index: 10; /* Ensure instruction is above container but below apology */
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            z-index: 21; /* Ensure close button is above apology message */
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+
+        /* Floating Hearts Animation */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            animation: floatUp 4s linear forwards;
+            font-size: 20px;
+            z-index: 1000;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                height: 70vh; /* Adjust height for smaller screens */
+            }
+            .apology-text {
+                font-size: 2em; /* Smaller text on small screens */
+            }
+            .apology-subtitle {
+                font-size: 1em;
+            }
+            .heart {
+                font-size: 2.5em;
+            }
+            .instruction {
+                font-size: 0.8em;
+                padding: 8px 15px;
+            }
+            /* Custom cursors might not work on all mobile browsers, so rely on default */
+            .photo-container {
+                cursor: pointer; /* Fallback for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="instruction">Click anywhere to release your anger! 😤</div>
+        <div class="photo-container" id="photoContainer">
+            </div>
+        
+        <div class="apology-message" id="apologyMessage">
+            <button class="close-btn" onclick="hideApology()">&times;</button>
+            <div class="apology-text">I'm veryyyyy soryyyyyy! 😭</div>
+            <div class="apology-subtitle">Please forgive me...</div>
+            <div class="heart">❤️</div>
+        </div>
+    </div>
+
+    <script>
+        const photoContainer = document.getElementById('photoContainer');
+        const apologyMessage = document.getElementById('apologyMessage');
+        const instructionText = document.querySelector('.instruction');
+        const apologyMainText = document.querySelector('.apology-text'); // Get reference to change text
+        const container = document.querySelector('.container'); // Get container for shake
+        let clickCount = 0;
+        let apologyShown = false;
+        let heartInterval; // To store the interval for floating hearts
+
+        // Array of apology messages for variety
+        const apologyMessages = [
+            "I'm veryyyyy soryyyyyy! 😭"
+        ];
+
+        photoContainer.addEventListener('click', function(e) {
+            // Create click effect
+            const clickEffect = document.createElement('div');
+            clickEffect.classList.add('click-effect');
+            clickEffect.style.left = (e.offsetX - 25) + 'px';
+            clickEffect.style.top = (e.offsetY - 25) + 'px';
+            
+            photoContainer.appendChild(clickEffect);
+            
+            // Remove effect after animation
+            setTimeout(() => {
+                clickEffect.remove();
+            }, 600);
+            
+            // Increment click count
+            clickCount++;
+            
+            // Show apology after 3 clicks
+            if (clickCount >= 3 && !apologyShown) {
+                setTimeout(() => {
+                    showApology();
+                }, 300); // Small delay to let last click effect play
+            }
+            
+            // Add shake effect to container
+            // Reset animation first to allow re-triggering
+            container.classList.remove('shake-animation');
+            void container.offsetWidth; // Trigger reflow to restart animation
+            container.classList.add('shake-animation');
+
+            // Remove shake animation class after it completes
+            setTimeout(() => {
+                container.classList.remove('shake-animation');
+            }, 300); // Match shake animation duration
+        });
+
+        function showApology() {
+            // Random apology message
+            const randomMessage = apologyMessages[Math.floor(Math.random() * apologyMessages.length)];
+            apologyMainText.textContent = randomMessage; // Set the apology text
+            
+            apologyMessage.classList.add('show');
+            apologyShown = true;
+            
+            // Hide instruction
+            instructionText.style.display = 'none';
+
+            // Start floating hearts when apology is shown
+            heartInterval = setInterval(createFloatingHeart, 1000); // Create heart every 1 second
+        }
+
+        function hideApology() {
+            apologyMessage.classList.remove('show');
+            apologyShown = false;
+            clickCount = 0;
+            
+            // Show instruction again
+            instructionText.style.display = 'block';
+
+            // Stop floating hearts when apology is hidden
+            clearInterval(heartInterval);
+        }
+
+        // Add floating hearts for extra effect
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️'; // Or use a small heart image if you have one
+            heart.classList.add('floating-heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's'; // Random duration 3-5s
+            heart.style.fontSize = (Math.random() * 15 + 15) + 'px'; // Random size 15-30px
+            heart.style.transform = `translateY(0) rotate(${Math.random() * 360}deg)`; // Random start rotation
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, parseFloat(heart.style.animationDuration) * 1000); // Remove after animation ends
+        }
+
+        // Initialize floating hearts if needed on load (optional, currently starts on apology show)
+        // You could uncomment this if you want hearts floating immediately when the page loads
+        /*
+        setInterval(() => {
+            createFloatingHeart();
+        }, 2000); // Create a heart every 2 seconds from the start
+        */
+    </script>
+</body>
+</html>
